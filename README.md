@@ -1,4 +1,4 @@
-# Phát triển ứng dụng di động đa nền tảng (1) - Nguyễn Thị Châu Thi - 22IT274
+# Phát triển ứng dụng di động đa nền tảng (1) - Bùi Đình Trung - 22IT316
 # 📸 Photo Journal
 
 A modern, responsive photo gallery app built with Next.js and Capacitor, featuring cross-platform photo capture and management capabilities.
