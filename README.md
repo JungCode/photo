@@ -15,7 +15,7 @@ A modern, responsive photo gallery app built with Next.js and Capacitor, featuri
 - **📱 Touch Gestures**: Swipe navigation and touch interactions
 - **⚡ PWA Ready**: Progressive Web App capabilities with camera support
 
-## 🚀 Demo
+## 🚀 Demo: https://photo-journal-khaki.vercel.app/
 
 ## 🌐 Web Demo
 
