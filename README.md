@@ -1,3 +1,4 @@
+# Phát triển ứng dụng di động đa nền tảng (1) - Nguyễn Thị Châu Thi - 22IT274
 # 📸 Photo Journal
 
 A modern, responsive photo gallery app built with Next.js and Capacitor, featuring cross-platform photo capture and management capabilities.
@@ -16,15 +17,21 @@ A modern, responsive photo gallery app built with Next.js and Capacitor, featuri
 
 ## 🚀 Demo
 
-**🌐 Web Demo:
-<img width="1896" height="922" alt="image" src="https://github.com/user-attachments/assets/577e6919-7284-4b4c-b2a3-67d0d975db79" />
+## 🌐 Web Demo
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/577e6919-7284-4b4c-b2a3-67d0d975db79" width="70%" />
+</p>
 
 
-**📱 Mobile Demo:
-<img width="1242" height="2397" alt="image" src="https://github.com/user-attachments/assets/9e8abc69-7dcc-4339-9a0b-3325567c33bd" />
-<img width="1242" height="2178" alt="image" src="https://github.com/user-attachments/assets/2b28bfb8-c9a2-4d60-8409-1c0d48ddc896" />
-<img width="1242" height="2175" alt="image" src="https://github.com/user-attachments/assets/81c0376d-ce98-44ab-8403-d55ec32edfa0" />
-<img width="1242" height="2164" alt="image" src="https://github.com/user-attachments/assets/05bf2bdc-d872-4420-8380-02f495a2bc4d" />
+## 📱 Mobile Demo
+
+<p align="center">
+  <img src="https://github.com/user-attachments/assets/9e8abc69-7dcc-4339-9a0b-3325567c33bd" width="23%" />
+  <img src="https://github.com/user-attachments/assets/2b28bfb8-c9a2-4d60-8409-1c0d48ddc896" width="23%" />
+  <img src="https://github.com/user-attachments/assets/81c0376d-ce98-44ab-8403-d55ec32edfa0" width="23%" />
+  <img src="https://github.com/user-attachments/assets/05bf2bdc-d872-4420-8380-02f495a2bc4d" width="23%" />
+</p>
 
 ## 🛠️ Tech Stack
 
