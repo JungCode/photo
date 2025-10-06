@@ -267,8 +267,8 @@ function CameraCapture({ onCapture }: { onCapture: (title: string, imageData: st
         allowEditing: false,
         resultType: CameraResultType.Base64,
         source: CameraSource.Camera,
-        width: 400,
-        height: 600
+        width: 500,
+        height: 500
       })
       
       if (image.base64String) {
@@ -358,7 +358,7 @@ function CameraCapture({ onCapture }: { onCapture: (title: string, imageData: st
 
           {/* Photo with frame */}
           <div className="h-full flex flex-col items-center justify-center p-8 pt-20">
-            <div className="relative w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-sm aspect-square rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src={capturedPhoto}
                 alt="Captured photo"
@@ -511,13 +511,13 @@ function GridGallery({ photos, onDelete, onEditTitle, onModalChange }: {
     <>
       <div className="min-h-screen p-4 bg-black">
         <h1 className="text-2xl font-bold text-center mb-6 text-white">My Memories</h1>
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 max-w-6xl mx-auto">
+        <div className="grid grid-cols-3 gap-2 max-w-4xl mx-auto">
           {photos.map((photo) => (
             <div key={photo.id} className="bg-gray-900 rounded-lg shadow-lg overflow-hidden border border-gray-800">
               <img
                 src={photo.webPath}
                 alt={photo.title}
-                className="w-full h-48 object-cover cursor-pointer hover:opacity-80 transition-all"
+                className="w-full aspect-square object-cover cursor-pointer hover:opacity-80 transition-all"
                 onClick={() => handlePhotoClick(photo)}
                 onError={() => {
                   console.log('Image load error for photo:', photo.id)
@@ -633,7 +633,7 @@ function GridGallery({ photos, onDelete, onEditTitle, onModalChange }: {
 
           {/* Photo with frame */}
           <div className="h-full flex flex-col items-center justify-center p-8 pt-20">
-            <div className="relative w-full max-w-sm aspect-[3/4] rounded-2xl overflow-hidden shadow-2xl">
+            <div className="relative w-full max-w-sm aspect-square rounded-2xl overflow-hidden shadow-2xl">
               <img
                 src={selectedPhoto.webPath}
                 alt={selectedPhoto.title}
