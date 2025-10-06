@@ -29,8 +29,8 @@ A modern, responsive photo gallery app built with Next.js and Capacitor, featuri
 <p align="center">
   <img src="https://github.com/user-attachments/assets/9e8abc69-7dcc-4339-9a0b-3325567c33bd" width="23%" />
   <img src="https://github.com/user-attachments/assets/05bf2bdc-d872-4420-8380-02f495a2bc4d" width="23%" />
-  <img src="https://github.com/user-attachments/assets/2b28bfb8-c9a2-4d60-8409-1c0d48ddc896" width="23%" />
   <img src="https://github.com/user-attachments/assets/81c0376d-ce98-44ab-8403-d55ec32edfa0" width="23%" />
+  <img src="https://github.com/user-attachments/assets/2b28bfb8-c9a2-4d60-8409-1c0d48ddc896" width="23%" />
 </p>
 
 ## 🛠️ Tech Stack
