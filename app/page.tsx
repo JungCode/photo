@@ -1,9 +1,9 @@
 "use client"
 
-import { useState, useRef, useEffect } from "react"
-import { Camera, Share, Edit3, Trash2, Grid3X3, Smartphone, MoreHorizontal } from "lucide-react"
+import { useState, useEffect } from "react"
+import { Camera, Share, Edit3, Trash2 } from "lucide-react"
 import { Camera as CapacitorCamera, CameraResultType, CameraSource } from '@capacitor/camera'
-import { Filesystem, Directory, Encoding } from '@capacitor/filesystem'
+import { Filesystem, Directory } from '@capacitor/filesystem'
 import { Preferences } from '@capacitor/preferences'
 import { Share as CapacitorShare } from '@capacitor/share'
 
@@ -32,7 +32,7 @@ function usePhotoGallery() {
   // Load photos from Capacitor Preferences on mount
   useEffect(() => {
     loadPhotos()
-  }, [])
+  }, []) // eslint-disable-line react-hooks/exhaustive-deps
 
   const loadPhotos = async () => {
     try {
@@ -178,7 +178,7 @@ function usePhotoGallery() {
             path: photo.filePath,
             directory: Directory.Documents
           })
-        } catch (fileError) {
+        } catch {
           console.log('File already deleted or does not exist:', photo.id)
         }
       }
@@ -226,13 +226,14 @@ function CameraCapture({ onCapture }: { onCapture: (title: string, imageData: st
         setCapturedImageData(image.base64String)
         setIsOpen(true)
       }
-    } catch (error: any) {
+    } catch (error: unknown) {
       // Check if user cancelled - this is normal behavior, not an error
-      if (error.message && (
-        error.message.includes('cancelled') || 
-        error.message.includes('canceled') ||
-        error.message.includes('User cancelled') ||
-        error.message.includes('User canceled')
+      const errorMessage = error instanceof Error ? error.message : String(error)
+      if (errorMessage && (
+        errorMessage.includes('cancelled') || 
+        errorMessage.includes('canceled') ||
+        errorMessage.includes('User cancelled') ||
+        errorMessage.includes('User canceled')
       )) {
         console.log('User cancelled photo capture')
         return // Just return silently, no fallback needed
@@ -334,302 +335,6 @@ function CameraCapture({ onCapture }: { onCapture: (title: string, imageData: st
   )
 }
 
-// Swiper Gallery (Locket style)
-function SwiperGallery({ photos, onDelete, onEditTitle }: { 
-  photos: Photo[], 
-  onDelete: (photo: Photo) => void,
-  onEditTitle: (photoId: string, newTitle: string) => void 
-}) {
-  const [currentIndex, setCurrentIndex] = useState(0)
-  const [showActions, setShowActions] = useState(false)
-  const [editingPhoto, setEditingPhoto] = useState<Photo | null>(null)
-  const [editTitle, setEditTitle] = useState("")
-  const [touchStart, setTouchStart] = useState<number | null>(null)
-  const [touchEnd, setTouchEnd] = useState<number | null>(null)
-
-  // Minimum swipe distance (in px)
-  const minSwipeDistance = 50
-
-  // Adjust currentIndex when photos change (especially after delete)
-  useEffect(() => {
-    if (photos.length > 0 && currentIndex >= photos.length) {
-      setCurrentIndex(photos.length - 1)
-    } else if (photos.length === 0) {
-      setCurrentIndex(0)
-    }
-  }, [photos.length, currentIndex])
-
-  const goToNext = () => {
-    if (currentIndex < photos.length - 1) {
-      setCurrentIndex(currentIndex + 1)
-    }
-  }
-
-  const goToPrevious = () => {
-    if (currentIndex > 0) {
-      setCurrentIndex(currentIndex - 1)
-    }
-  }
-
-  const handleDelete = () => {
-    if (photos.length > 0 && photos[currentIndex]) {
-      onDelete(photos[currentIndex])
-    }
-  }
-
-  // Focus for keyboard events - MUST be before early return
-  useEffect(() => {
-    const handleGlobalKeyDown = (e: KeyboardEvent) => {
-      if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-        goToNext()
-      } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-        goToPrevious()
-      }
-    }
-
-    document.addEventListener('keydown', handleGlobalKeyDown)
-    return () => document.removeEventListener('keydown', handleGlobalKeyDown)
-  }, [currentIndex, photos.length])
-
-  if (photos.length === 0) {
-    return (
-      <div className="h-screen bg-black flex items-center justify-center text-center px-8">
-        <div className="space-y-6">
-          <Camera size={60} className="text-white/40 mx-auto" strokeWidth={1} />
-          <div>
-            <h2 className="text-xl font-light text-white mb-2">No photos yet</h2>
-            <p className="text-white/60 text-sm">Tap the camera to capture a moment</p>
-          </div>
-        </div>
-      </div>
-    )
-  }
-
-  const currentPhoto = photos[currentIndex]
-  
-  // Extra safety check
-  if (!currentPhoto) {
-    return (
-      <div className="h-screen bg-black flex items-center justify-center text-center px-8">
-        <div className="space-y-4">
-          <Camera size={80} className="text-white/60 mx-auto animate-pulse" />
-          <h2 className="text-2xl font-semibold text-white">Loading...</h2>
-        </div>
-      </div>
-    )
-  }
-
-  const handleEdit = () => {
-    setEditTitle(currentPhoto.title)
-    setEditingPhoto(currentPhoto)
-  }
-
-  const handleSaveEdit = () => {
-    if (editingPhoto && editTitle.trim()) {
-      onEditTitle(editingPhoto.id, editTitle)
-      setEditingPhoto(null)
-    }
-  }
-
-  // Mouse wheel navigation
-  const handleScroll = (e: React.WheelEvent) => {
-    if (e.deltaY > 0) {
-      goToNext()
-    } else if (e.deltaY < 0) {
-      goToPrevious()
-    }
-  }
-
-  // Touch events for mobile swipe
-  const onTouchStart = (e: React.TouchEvent) => {
-    setTouchEnd(null) // otherwise the swipe is fired even with usual touch events
-    setTouchStart(e.targetTouches[0].clientY)
-  }
-
-  const onTouchMove = (e: React.TouchEvent) => {
-    setTouchEnd(e.targetTouches[0].clientY)
-  }
-
-  const onTouchEnd = () => {
-    if (!touchStart || !touchEnd) return
-    
-    const distance = touchStart - touchEnd
-    const isLeftSwipe = distance > minSwipeDistance
-    const isRightSwipe = distance < -minSwipeDistance
-
-    if (isLeftSwipe) {
-      goToNext() // Swipe up = next photo
-    }
-    if (isRightSwipe) {
-      goToPrevious() // Swipe down = previous photo
-    }
-  }
-
-  // Keyboard navigation
-  const handleKeyDown = (e: React.KeyboardEvent) => {
-    if (e.key === 'ArrowDown' || e.key === 'ArrowRight') {
-      goToNext()
-    } else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') {
-      goToPrevious()
-    }
-  }
-
-  return (
-    <div 
-      className="h-screen w-full bg-black relative overflow-hidden" 
-      onWheel={handleScroll}
-      onTouchStart={onTouchStart}
-      onTouchMove={onTouchMove}
-      onTouchEnd={onTouchEnd}
-      tabIndex={0}
-      onClick={() => setShowActions(!showActions)}
-    >
-      {/* Full screen photo */}
-      <div className="w-full h-full flex items-center justify-center">
-        <img
-          src={currentPhoto.webPath}
-          alt={currentPhoto.title}
-          className="w-full h-full object-cover"
-        />
-      </div>
-
-      {/* Minimal overlay */}
-      {currentPhoto.title && (
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-6">
-          <p className="text-white text-lg font-light">{currentPhoto.title}</p>
-        </div>
-      )}
-
-      {/* Top minimal indicators */}
-      <div className="absolute top-6 left-0 right-0 flex justify-center">
-        <div className="flex gap-1">
-          {photos.map((_, index) => (
-            <div
-              key={index}
-              className={`w-1 h-1 rounded-full transition-all ${
-                index === currentIndex ? "bg-white" : "bg-white/30"
-              }`}
-            />
-          ))}
-        </div>
-      </div>
-
-      {/* Action menu overlay */}
-      {showActions && (
-        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 space-y-4">
-            <button
-              className="flex items-center gap-3 text-white w-full py-3 px-4 rounded-xl hover:bg-white/10 transition-all"
-              onClick={async () => {
-                try {
-                  // Check if running on web or mobile
-                  const isWeb = !window.Capacitor || 
-                               window.Capacitor.platform === 'web' || 
-                               (typeof window !== 'undefined' && window.location.protocol === 'http:') ||
-                               (typeof window !== 'undefined' && window.location.hostname === 'localhost')
-                  
-                  if (isWeb && currentPhoto.webPath?.startsWith('data:')) {
-                    // For web with base64 images, use Web Share API without URL
-                    if (navigator.share) {
-                      // Convert base64 to blob for sharing
-                      const response = await fetch(currentPhoto.webPath)
-                      const blob = await response.blob()
-                      const file = new File([blob], `photo_${currentPhoto.id}.jpg`, { type: 'image/jpeg' })
-                      
-                      await navigator.share({
-                        title: currentPhoto.title || 'Shared Photo',
-                        text: currentPhoto.title || 'Check out this photo!',
-                        files: [file]
-                      })
-                    } else {
-                      // Fallback: copy to clipboard
-                      navigator.clipboard.writeText(currentPhoto.title || 'Check out this photo!')
-                      alert('Photo info copied to clipboard!')
-                    }
-                  } else {
-                    // For mobile with filesystem, use Capacitor Share
-                    await CapacitorShare.share({
-                      title: currentPhoto.title,
-                      text: currentPhoto.title,
-                      url: currentPhoto.webPath,
-                      dialogTitle: 'Share Photo'
-                    })
-                  }
-                } catch (error) {
-                  console.error('Error sharing:', error)
-                  // Fallback: copy title to clipboard
-                  try {
-                    await navigator.clipboard.writeText(currentPhoto.title || 'Check out this photo!')
-                    alert('Photo info copied to clipboard!')
-                  } catch (clipboardError) {
-                    console.error('Clipboard fallback failed:', clipboardError)
-                  }
-                }
-              }}
-            >
-              <Share size={20} strokeWidth={1.5} />
-              <span className="font-light">Share</span>
-            </button>
-            <button 
-              className="flex items-center gap-3 text-white w-full py-3 px-4 rounded-xl hover:bg-white/10 transition-all"
-              onClick={handleEdit}
-            >
-              <Edit3 size={20} strokeWidth={1.5} />
-              <span className="font-light">Edit Caption</span>
-            </button>
-            <button
-              className="flex items-center gap-3 text-red-400 w-full py-3 px-4 rounded-xl hover:bg-white/10 transition-all"
-              onClick={handleDelete}
-            >
-              <Trash2 size={20} strokeWidth={1.5} />
-              <span className="font-light">Delete</span>
-            </button>
-          </div>
-        </div>
-      )}
-
-      {/* Tap hint when actions are hidden */}
-      {!showActions && (
-        <div className="absolute bottom-4 left-1/2 -translate-x-1/2 text-white/50 text-xs">
-          Tap photo for options • Swipe for navigation
-        </div>
-      )}
-
-      {/* Edit Modal */}
-      {editingPhoto && (
-        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50 p-4">
-          <div className="bg-white/10 backdrop-blur-lg rounded-2xl p-6 max-w-md w-full">
-            <h2 className="text-lg font-light mb-4 text-white">Edit Caption</h2>
-            <input
-              type="text"
-              value={editTitle}
-              onChange={(e) => setEditTitle(e.target.value)}
-              className="w-full p-3 bg-white/10 text-white placeholder-white/60 rounded-xl border-none outline-none"
-              placeholder="Add a caption..."
-              autoFocus
-              onKeyDown={(e) => e.key === "Enter" && handleSaveEdit()}
-            />
-            <div className="flex gap-3 mt-4">
-              <button
-                onClick={() => setEditingPhoto(null)}
-                className="flex-1 p-3 bg-white/10 text-white rounded-xl hover:bg-white/20 transition-all font-light"
-              >
-                Cancel
-              </button>
-              <button
-                onClick={handleSaveEdit}
-                className="flex-1 p-3 bg-white text-black rounded-xl hover:bg-gray-100 transition-all font-medium"
-              >
-                Save
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-    </div>
-  )
-}
-
 // Grid Gallery
 function GridGallery({ photos, onDelete, onEditTitle, onModalChange }: { 
   photos: Photo[], 
@@ -710,7 +415,7 @@ function GridGallery({ photos, onDelete, onEditTitle, onModalChange }: {
 
     document.addEventListener('keydown', handleKeyDown)
     return () => document.removeEventListener('keydown', handleKeyDown)
-  }, [selectedPhoto, currentIndex, photos.length])
+  }, [selectedPhoto, currentIndex, photos.length]) // eslint-disable-line react-hooks/exhaustive-deps
 
   // Handle photo selection from grid
   const handlePhotoClick = (photo: Photo) => {
@@ -764,7 +469,7 @@ function GridGallery({ photos, onDelete, onEditTitle, onModalChange }: {
                 alt={photo.title}
                 className="w-full h-48 object-cover cursor-pointer hover:opacity-80 transition-all"
                 onClick={() => handlePhotoClick(photo)}
-                onError={(e) => {
+                onError={() => {
                   console.log('Image load error for photo:', photo.id)
                   // Only auto-delete if it's not a data: URL (base64)
                   if (!photo.webPath?.startsWith('data:')) {
