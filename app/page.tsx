@@ -96,7 +96,14 @@ function usePhotoGallery() {
 
   const takePhoto = async (title: string, imageData: string) => {
     try {
-      // Enhanced platform detection with multiple checks
+      // Force web behavior when running in browser environment
+      // Check for browser-specific APIs that don't exist in native mobile
+      const isBrowserEnvironment = typeof window !== 'undefined' && 
+                                   typeof document !== 'undefined' && 
+                                   typeof navigator !== 'undefined' &&
+                                   'userAgent' in navigator
+
+      // Enhanced platform detection with browser environment check
       const hasCapacitor = !!window.Capacitor
       const capacitorPlatform = window.Capacitor?.platform
       const isLocalhost = typeof window !== 'undefined' && (
@@ -106,23 +113,27 @@ function usePhotoGallery() {
       )
       const isHttp = typeof window !== 'undefined' && window.location.protocol === 'http:'
       
-      // Force web behavior for development environment
-      const isWeb = !hasCapacitor || 
+      // Force web behavior for ANY browser environment (development OR production)
+      const isWeb = isBrowserEnvironment || 
+                   !hasCapacitor || 
                    capacitorPlatform === 'web' || 
                    isLocalhost || 
                    isHttp ||
                    (typeof window !== 'undefined' && window.location.href.includes('localhost'))
       
       console.log('=== Photo Capture Debug ===')
+      console.log('isBrowserEnvironment:', isBrowserEnvironment)
       console.log('hasCapacitor:', hasCapacitor)
       console.log('capacitorPlatform:', capacitorPlatform)
       console.log('isLocalhost:', isLocalhost)
       console.log('isHttp:', isHttp)
       console.log('location.href:', window.location.href)
+      console.log('userAgent:', navigator.userAgent)
       console.log('FINAL isWeb decision:', isWeb)
       console.log('imageData length:', imageData.length)
       console.log('========================')
       
+      // ALWAYS use web storage when in browser (even with Capacitor present)
       if (isWeb) {
         // For web: store base64 image directly
         const newPhoto: Photo = {
@@ -188,7 +199,12 @@ function usePhotoGallery() {
 
   const deletePhoto = async (photo: Photo) => {
     try {
-      // Enhanced platform detection (same as takePhoto)
+      // Force web behavior when running in browser environment (same logic as takePhoto)
+      const isBrowserEnvironment = typeof window !== 'undefined' && 
+                                   typeof document !== 'undefined' && 
+                                   typeof navigator !== 'undefined' &&
+                                   'userAgent' in navigator
+
       const hasCapacitor = !!window.Capacitor
       const capacitorPlatform = window.Capacitor?.platform
       const isLocalhost = typeof window !== 'undefined' && (
@@ -198,7 +214,8 @@ function usePhotoGallery() {
       )
       const isHttp = typeof window !== 'undefined' && window.location.protocol === 'http:'
       
-      const isWeb = !hasCapacitor || 
+      const isWeb = isBrowserEnvironment || 
+                   !hasCapacitor || 
                    capacitorPlatform === 'web' || 
                    isLocalhost || 
                    isHttp ||
