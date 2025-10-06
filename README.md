@@ -5,15 +5,15 @@ A modern, responsive photo gallery app built with Next.js and Capacitor, featuri
 
 ## ✨ Features
 
-- **📱 Cross-Platform Camera**: Take photos on both web and mobile devices
-- **🖼️ Grid Gallery**: Responsive grid layout with 3 photos per row (desktop & mobile)
-- **🎨 Square Photos**: Consistent square aspect ratio for all photos
-- **💾 Smart Storage**: Base64 storage for web, filesystem for mobile apps
-- **🔄 Photo Management**: Add captions, edit titles, delete photos
-- **📤 Native Sharing**: Share photos using Web Share API or Capacitor Share
-- **🌙 Dark Theme**: Elegant dark interface with glass morphism effects
-- **📱 Touch Gestures**: Swipe navigation and touch interactions
-- **⚡ PWA Ready**: Progressive Web App capabilities with camera support
+- ** Cross-Platform Camera**: Take photos on both web and mobile devices
+- ** Grid Gallery**: Responsive grid layout with 3 photos per row (desktop & mobile)
+- ** Square Photos**: Consistent square aspect ratio for all photos
+- ** Smart Storage**: Base64 storage for web, filesystem for mobile apps
+- ** Photo Management**: Add captions, edit titles, delete photos
+- ** Native Sharing**: Share photos using Web Share API or Capacitor Share
+- ** Dark Theme**: Elegant dark interface with glass morphism effects
+- ** Touch Gestures**: Swipe navigation and touch interactions
+- ** PWA Ready**: Progressive Web App capabilities with camera support
 
 ## 🚀 Demo: https://photo-journal-khaki.vercel.app/
 
