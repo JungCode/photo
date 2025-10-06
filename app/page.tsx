@@ -96,9 +96,32 @@ function usePhotoGallery() {
 
   const takePhoto = async (title: string, imageData: string) => {
     try {
-      // Check if running on web or mobile - more robust platform detection
-      const isWeb = !window.Capacitor || window.Capacitor.platform === 'web' || typeof window !== 'undefined' && window.location.protocol === 'http:'
-      console.log('Taking photo, platform:', window.Capacitor?.platform, 'isWeb:', isWeb, 'imageData length:', imageData.length)
+      // Enhanced platform detection with multiple checks
+      const hasCapacitor = !!window.Capacitor
+      const capacitorPlatform = window.Capacitor?.platform
+      const isLocalhost = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' || 
+        window.location.hostname === '127.0.0.1' ||
+        window.location.port !== ''
+      )
+      const isHttp = typeof window !== 'undefined' && window.location.protocol === 'http:'
+      
+      // Force web behavior for development environment
+      const isWeb = !hasCapacitor || 
+                   capacitorPlatform === 'web' || 
+                   isLocalhost || 
+                   isHttp ||
+                   (typeof window !== 'undefined' && window.location.href.includes('localhost'))
+      
+      console.log('=== Photo Capture Debug ===')
+      console.log('hasCapacitor:', hasCapacitor)
+      console.log('capacitorPlatform:', capacitorPlatform)
+      console.log('isLocalhost:', isLocalhost)
+      console.log('isHttp:', isHttp)
+      console.log('location.href:', window.location.href)
+      console.log('FINAL isWeb decision:', isWeb)
+      console.log('imageData length:', imageData.length)
+      console.log('========================')
       
       if (isWeb) {
         // For web: store base64 image directly
@@ -110,7 +133,7 @@ function usePhotoGallery() {
           webPath: `data:image/jpeg;base64,${imageData}`
         }
         
-        console.log('Created web photo:', newPhoto.id, 'webPath length:', newPhoto.webPath?.length)
+        console.log('✅ Created WEB photo:', newPhoto.id, 'webPath type:', typeof newPhoto.webPath, 'starts with data:', newPhoto.webPath?.startsWith('data:'))
         
         const updatedPhotos = [newPhoto, ...photos]
         setPhotos(updatedPhotos)
@@ -138,7 +161,7 @@ function usePhotoGallery() {
           webPath: webPath.uri
         }
         
-        console.log('Created mobile photo:', newPhoto.id, 'webPath:', newPhoto.webPath)
+        console.log('📱 Created MOBILE photo:', newPhoto.id, 'webPath:', newPhoto.webPath)
         
         const updatedPhotos = [newPhoto, ...photos]
         setPhotos(updatedPhotos)
@@ -165,11 +188,21 @@ function usePhotoGallery() {
 
   const deletePhoto = async (photo: Photo) => {
     try {
-      // Check if running on web or mobile - more robust platform detection
-      const isWeb = !window.Capacitor || 
-                   window.Capacitor.platform === 'web' || 
-                   (typeof window !== 'undefined' && window.location.protocol === 'http:') ||
-                   (typeof window !== 'undefined' && window.location.hostname === 'localhost')
+      // Enhanced platform detection (same as takePhoto)
+      const hasCapacitor = !!window.Capacitor
+      const capacitorPlatform = window.Capacitor?.platform
+      const isLocalhost = typeof window !== 'undefined' && (
+        window.location.hostname === 'localhost' || 
+        window.location.hostname === '127.0.0.1' ||
+        window.location.port !== ''
+      )
+      const isHttp = typeof window !== 'undefined' && window.location.protocol === 'http:'
+      
+      const isWeb = !hasCapacitor || 
+                   capacitorPlatform === 'web' || 
+                   isLocalhost || 
+                   isHttp ||
+                   (typeof window !== 'undefined' && window.location.href.includes('localhost'))
       
       if (!isWeb && !photo.filePath.startsWith('data:')) {
         // For mobile: delete from filesystem (only if it's not a base64 image)
