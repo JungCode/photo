@@ -1,36 +1,84 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 📸 Photo Journal
 
-## Getting Started
+A modern, responsive photo gallery app built with Next.js and Capacitor, featuring cross-platform photo capture and management capabilities.
 
-First, run the development server:
+## ✨ Features
 
+- **📱 Cross-Platform Camera**: Take photos on both web and mobile devices
+- **🖼️ Grid Gallery**: Responsive grid layout with 3 photos per row (desktop & mobile)
+- **🎨 Square Photos**: Consistent square aspect ratio for all photos
+- **💾 Smart Storage**: Base64 storage for web, filesystem for mobile apps
+- **🔄 Photo Management**: Add captions, edit titles, delete photos
+- **📤 Native Sharing**: Share photos using Web Share API or Capacitor Share
+- **🌙 Dark Theme**: Elegant dark interface with glass morphism effects
+- **📱 Touch Gestures**: Swipe navigation and touch interactions
+- **⚡ PWA Ready**: Progressive Web App capabilities with camera support
+
+## 🚀 Demo
+
+**🌐 Web Demo:
+<img width="1896" height="922" alt="image" src="https://github.com/user-attachments/assets/577e6919-7284-4b4c-b2a3-67d0d975db79" />
+
+
+**📱 Mobile Demo:
+<img width="1242" height="2397" alt="image" src="https://github.com/user-attachments/assets/9e8abc69-7dcc-4339-9a0b-3325567c33bd" />
+<img width="1242" height="2178" alt="image" src="https://github.com/user-attachments/assets/2b28bfb8-c9a2-4d60-8409-1c0d48ddc896" />
+<img width="1242" height="2175" alt="image" src="https://github.com/user-attachments/assets/81c0376d-ce98-44ab-8403-d55ec32edfa0" />
+<img width="1242" height="2164" alt="image" src="https://github.com/user-attachments/assets/05bf2bdc-d872-4420-8380-02f495a2bc4d" />
+
+## 🛠️ Tech Stack
+
+- **Frontend Framework:** Next.js 15.2.4 with App Router
+- **Styling:** Tailwind CSS v4 with custom components
+- **Mobile Framework:** Capacitor for native mobile features
+- **Icons:** Lucide React
+- **Camera Support:** @capacitor/camera + @ionic/pwa-elements
+- **Storage:** @capacitor/preferences with localStorage fallback
+- **Deployment:** Vercel (web) + Capacitor Build (mobile)
+
+## 📦 Installation
+
+### Prerequisites
+- Node.js 18+ 
+- npm or yarn
+- Android Studio (for Android builds)
+- Xcode (for iOS builds)
+
+### Setup
 ```bash
+# Clone repository
+git clone https://github.com/chouthi/Photo_Journal.git
+cd Photo_Journal
+
+# Install dependencies
+npm install
+
+# Install Capacitor dependencies
+npm install @capacitor/camera @capacitor/filesystem @capacitor/preferences @capacitor/share @ionic/pwa-elements
+
+# Run development server
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Visit `http://localhost:3000` to see the app in action.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Key Components
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 📸 Camera Capture
+- **Web**: Uses PWA Elements for camera access in browsers
+- **Mobile**: Native camera API through Capacitor
+- **Fallback**: Random demo images for development/testing
 
-## Learn More
+### 🖼️ Photo Storage
+- **Web Platform**: Base64 encoding stored in Capacitor Preferences
+- **Mobile Platform**: File system storage with secure paths
+- **Migration**: Automatic cleanup of invalid photo references
 
-To learn more about Next.js, take a look at the following resources:
+### 🎨 UI/UX Features
+- **Responsive Grid**: 3 columns on all screen sizes
+- **Square Aspect Ratio**: Consistent 1:1 ratio for all photos
+- **Glass Morphism**: Modern frosted glass effects
+- **Touch Navigation**: Swipe gestures for photo browsing
+- **Modal Previews**: Full-screen photo viewing with navigation
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
